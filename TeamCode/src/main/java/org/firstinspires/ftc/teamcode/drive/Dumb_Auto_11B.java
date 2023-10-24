@@ -78,9 +78,9 @@ public class Dumb_Auto_11B extends LinearOpMode{
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(0.7,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(0.6,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(0.7, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        encoderDrive(0.7,  48,  48, 48, 48, 5.0);
+        encoderDrive(0.6,   12, -12, 12, -12, 4.0);
+        encoderDrive(0.7, -24, -24, -24, -24, 4.0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -96,7 +96,7 @@ public class Dumb_Auto_11B extends LinearOpMode{
      *  3) Driver stops the OpMode running.
      */
     public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
+                             double BleftInches, double BrightInches, double FleftInches, double FrightInches,
                              double timeoutS) {
         int newBLeftTarget;
         int newBRightTarget;
@@ -107,10 +107,10 @@ public class Dumb_Auto_11B extends LinearOpMode{
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newBLeftTarget = BLDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newBRightTarget = BRDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newFLeftTarget = FLDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newFRightTarget = FRDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newBLeftTarget = BLDrive.getCurrentPosition() + (int)(BleftInches * COUNTS_PER_INCH);
+            newBRightTarget = BRDrive.getCurrentPosition() + (int)(BrightInches * COUNTS_PER_INCH);
+            newFLeftTarget = FLDrive.getCurrentPosition() + (int)(FleftInches * COUNTS_PER_INCH);
+            newFRightTarget = FRDrive.getCurrentPosition() + (int)(FrightInches * COUNTS_PER_INCH);
 
             BLDrive.setTargetPosition(newBLeftTarget);
             BRDrive.setTargetPosition(newBRightTarget);
