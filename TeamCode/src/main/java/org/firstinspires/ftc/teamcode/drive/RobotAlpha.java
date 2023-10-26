@@ -45,6 +45,12 @@ public class RobotAlpha extends LinearOpMode {
         BRDrive.setDirection(DcMotor.Direction.FORWARD);
         STRAIGHTUUUPPPPP.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        STRAIGHTUUUPPPPP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -93,12 +99,28 @@ public class RobotAlpha extends LinearOpMode {
             }
 
             //TODO: WRITE MORE CODE HERE TO MAKE MOTORS MOVE
-
-            if(gamepad2.x){
-               STRAIGHTUUUPPPPP.setPower(0.5);
-            }if(gamepad2.y){
-                STRAIGHTUUUPPPPP.setPower(-0.5);
+/* THIS CODE IS FOR USING THE LIFT WITH BUTTONS.
+            if(gamepad2.x && (!gamepad2.y)){
+               STRAIGHTUUUPPPPP.setPower(0.7);
+            }else if(gamepad2.y && !(gamepad2.x)){
+                STRAIGHTUUUPPPPP.setPower(-0.7);
+            }else{
+                STRAIGHTUUUPPPPP.setPower(0);
             }
+*/
+
+            //THIS CODE IS FOR USING THE LIFT WITH JOYSICKS LIKE A NORMAL PERSON
+            double liftJoystick = gamepad2.left_stick_y;
+            if(liftJoystick>1){
+                liftJoystick = 1.0;
+            }
+
+            if(liftJoystick>0.05){
+                STRAIGHTUUUPPPPP.setPower(liftJoystick);
+            } else{
+                STRAIGHTUUUPPPPP.setPower(0);
+            }
+
 
             double botHeadingDeg = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             double rotate = botHeadingDeg - desiredHeading; // algorithm for automatic turning
