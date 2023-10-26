@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@TeleOp(name = "V1.0", group = "Iterative Opmode")
+@TeleOp(name = "V1.0.1", group = "Iterative Opmode")
 public class RobotAlpha extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,6 +29,7 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor FRDrive = null;
         DcMotor BLDrive = null;
         DcMotor BRDrive = null;
+        DcMotor STRAIGHTUUUPPPPP = null;
 
         //Write numerical variables here
         double desiredHeading = 0;
@@ -36,11 +37,13 @@ public class RobotAlpha extends LinearOpMode {
         FRDrive = hardwareMap.get(DcMotor.class, "FRDrive");
         BLDrive = hardwareMap.get(DcMotor.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
+        STRAIGHTUUUPPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUP");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
         FRDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.FORWARD);
+        STRAIGHTUUUPPPPP.setDirection(DcMotorSimple.Direction.FORWARD);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -90,6 +93,12 @@ public class RobotAlpha extends LinearOpMode {
             }
 
             //TODO: WRITE MORE CODE HERE TO MAKE MOTORS MOVE
+
+            if(gamepad2.x){
+               STRAIGHTUUUPPPPP.setPower(0.5);
+            }if(gamepad2.y){
+                STRAIGHTUUUPPPPP.setPower(-0.5);
+            }
 
             double botHeadingDeg = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             double rotate = botHeadingDeg - desiredHeading; // algorithm for automatic turning
