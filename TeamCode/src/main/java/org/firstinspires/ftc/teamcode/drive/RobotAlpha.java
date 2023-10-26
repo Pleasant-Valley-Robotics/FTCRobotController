@@ -115,7 +115,7 @@ public class RobotAlpha extends LinearOpMode {
                 liftJoystick = 1.0;
             }
 
-            if(liftJoystick>0.05){
+            if(liftJoystick>0.05 || liftJoystick<-0.05){
                 STRAIGHTUUUPPPPP.setPower(liftJoystick);
             } else{
                 STRAIGHTUUUPPPPP.setPower(0);
