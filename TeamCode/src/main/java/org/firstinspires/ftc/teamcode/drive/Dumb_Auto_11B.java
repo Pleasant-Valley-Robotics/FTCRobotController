@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Dumb_Auto_11_Blue")
+@Autonomous(name="Test Auto V1.0.0")
 public class Dumb_Auto_11B extends LinearOpMode {
     /* Declare OpMode members. */
 
