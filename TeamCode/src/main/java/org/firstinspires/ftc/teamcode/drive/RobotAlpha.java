@@ -30,6 +30,9 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor BLDrive = null;
         DcMotor BRDrive = null;
         DcMotor STRAIGHTUUUPPPPP = null;
+        DcMotor liftJoint = null;
+        DcMotor leftLift = null;
+        DcMotor rightLift = null;
 
         //Write numerical variables here
         double desiredHeading = 0;
@@ -38,18 +41,27 @@ public class RobotAlpha extends LinearOpMode {
         BLDrive = hardwareMap.get(DcMotor.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
         STRAIGHTUUUPPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUP");
+        liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
+        leftLift = hardwareMap.get(DcMotor.class, "leftLift");
+        rightLift = hardwareMap.get(DcMotor.class, "rightLift");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
         FRDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.FORWARD);
         STRAIGHTUUUPPPPP.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
 
         FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         STRAIGHTUUUPPPPP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -110,7 +122,10 @@ public class RobotAlpha extends LinearOpMode {
 */
 
             //THIS CODE IS FOR USING THE LIFT WITH JOYSICKS LIKE A NORMAL PERSON
+            // For analog
             double liftJoystick = gamepad2.left_stick_y;
+            // For digital
+            //boolean liftJoysick = ((gamepad2.left_stick_y)>0.05) || ((gamepad2.left_stick_y)< -0.05);
             if(liftJoystick>1){
                 liftJoystick = 1.0;
             }
@@ -121,6 +136,18 @@ public class RobotAlpha extends LinearOpMode {
                 STRAIGHTUUUPPPPP.setPower(0);
             }
 
+            boolean liftMoveUp = gamepad2.dpad_up;
+            boolean liftMoveDown = gamepad2.dpad_down;
+
+            if(liftMoveUp && !liftMoveDown){
+                leftLift.setPower(0.7);
+                rightLift.setPower(0.7);
+            } else if(liftMoveDown && !liftMoveUp){
+                leftLift.setPower(-0.7);
+                rightLift.setPower(-0.7);
+            }
+
+            double
 
             double botHeadingDeg = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             double rotate = botHeadingDeg - desiredHeading; // algorithm for automatic turning
