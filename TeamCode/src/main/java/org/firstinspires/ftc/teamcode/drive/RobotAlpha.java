@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@TeleOp(name = "V1.0.1", group = "Iterative Opmode")
+@TeleOp(name = "V1.1", group = "Iterative Opmode")
 public class RobotAlpha extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -111,7 +111,7 @@ public class RobotAlpha extends LinearOpMode {
             }
 
             //TODO: WRITE MORE CODE HERE TO MAKE MOTORS MOVE
-/* THIS CODE IS FOR USING THE LIFT WITH BUTTONS.
+/* THIS CODE IS FOR USING THE LIFT WITH BUTTONS. TESTING PURPOSES ONLY!
             if(gamepad2.x && (!gamepad2.y)){
                STRAIGHTUUUPPPPP.setPower(0.7);
             }else if(gamepad2.y && !(gamepad2.x)){
@@ -122,10 +122,16 @@ public class RobotAlpha extends LinearOpMode {
 */
 
             //THIS CODE IS FOR USING THE LIFT WITH JOYSICKS LIKE A NORMAL PERSON
-            // For analog
-            double liftJoystick = gamepad2.left_stick_y;
             // For digital
             //boolean liftJoysick = ((gamepad2.left_stick_y)>0.05) || ((gamepad2.left_stick_y)< -0.05);
+            /*
+            if (liftJoystick){
+                STRAIGHTUUUPPPPP.setPower(0.7);
+            }
+            */
+
+            // For analog
+            double liftJoystick = gamepad2.left_stick_y;
             if(liftJoystick>1){
                 liftJoystick = 1.0;
             }
