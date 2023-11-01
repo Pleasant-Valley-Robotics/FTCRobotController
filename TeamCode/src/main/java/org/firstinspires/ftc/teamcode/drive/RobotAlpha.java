@@ -147,7 +147,26 @@ public class RobotAlpha extends LinearOpMode {
                 rightLift.setPower(-0.7);
             }
 
-            double
+            //digital
+            //boolean jointMove ((gamepad2.right_stick_y)>0.05) || ((gamepad2.right_stick_y)< -0.05);
+            /*
+            if (jointMove){
+                liftJoint.setPower(0.7);
+            }
+            */
+
+
+            //analog
+            double jointMove = gamepad2.right_stick_y;
+            if(jointMove>1.0){
+                jointMove = 1.0;
+            }
+
+            if(jointMove>0.05 || jointMove<-0.05){
+                liftJoint.setPower(jointMove);
+            } else{
+                liftJoint.setPower(0);
+            }
 
             double botHeadingDeg = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             double rotate = botHeadingDeg - desiredHeading; // algorithm for automatic turning
