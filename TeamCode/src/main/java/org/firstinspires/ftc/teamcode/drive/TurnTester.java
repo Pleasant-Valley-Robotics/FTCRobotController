@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Test Auto V1.0.0")
-public class Dumb_Auto_11B extends LinearOpMode {
+@Autonomous(name="TurnTester")
+public class TurnTester extends LinearOpMode {
     /* Declare OpMode members. */
 
     // Declare motor and sensor variables
@@ -60,7 +60,7 @@ public class Dumb_Auto_11B extends LinearOpMode {
         BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at",  "%7d :%7d :%7d :%7d",
+        telemetry.addData("Starting at",  "%7d :%7d",
                 FLDrive.getCurrentPosition(),
                 BLDrive.getCurrentPosition(),
                 FRDrive.getCurrentPosition(),
@@ -74,16 +74,14 @@ public class Dumb_Auto_11B extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Move the robot using the encoderDrive method
-        encoderDrive(0.7,  30,  30, 30, 30);
-        encoderDrive(-0.7,  28,  28, 28, 28);
-        encoderTurn(0.3, 90);
-        encoderDrive(0.7, 95, 95, 95, 95);
-
-
-        // Display a message when the path is complete
-        telemetry.addData("Path", "Complete");
+        telemetry.addData("Starting at",  "%7d :%7d",
+                FLDrive.getCurrentPosition(),
+                BLDrive.getCurrentPosition(),
+                FRDrive.getCurrentPosition(),
+                BRDrive.getCurrentPosition()
+        );
         telemetry.update();
-        sleep(1000);  // pause to display final telemetry message.
+
     }
 
     /*
@@ -123,81 +121,20 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
             // Reset the timeout time and start motion
             runtime.reset();
-            BLDrive.setPower(speed);
-            BRDrive.setPower(speed);
-            FLDrive.setPower(speed);
-            FRDrive.setPower(speed);
+            BLDrive.setPower(Math.abs(speed));
+            BRDrive.setPower(Math.abs(speed));
+            FLDrive.setPower(Math.abs(speed));
+            FRDrive.setPower(Math.abs(speed));
 
             // Keep looping while we are still active, there is time left, and both motors are running.
             // The move will stop when any of these conditions are met.
-//            while (opModeIsActive()) {
-//
+            while (opModeIsActive() &&
+                    (BLDrive.isBusy() && BRDrive.isBusy() && FRDrive.isBusy() && FLDrive.isBusy())) {
+
                 // Display target and current position for the driver
-                telemetry.addData("Running to",  " %7d :%7d :%7d :%7d", newFLeftTarget,  newFRightTarget, newBLeftTarget,
+                telemetry.addData("Running to",  " %7d :%7d", newFLeftTarget,  newFRightTarget, newBLeftTarget,
                         newBRightTarget );
-                telemetry.addData("Currently at",  " at %7d :%7d :%7d :%7d",
-                        FLDrive.getCurrentPosition(), FRDrive.getCurrentPosition(),
-                        BLDrive.getCurrentPosition(), BRDrive.getCurrentPosition());
-                telemetry.update();
-//            }
-
-            // Stop the motors once the move is complete
-            FLDrive.setPower(0);
-            FRDrive.setPower(0);
-            BLDrive.setPower(0);
-            BRDrive.setPower(0);
-
-            // Turn off RUN_TO_POSITION mode
-            FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // Optional pause after each move.
-        }
-    }
-
-    public void encoderTurn(double speed,
-                             int degrees) {
-        int newLeftTarget;
-        int newRightTarget;
-
-        final double DEGREES_TO_TICKS = 78.15;
-
-        newLeftTarget = (int)(DEGREES_TO_TICKS * degrees);
-        newRightTarget = (int)(DEGREES_TO_TICKS * degrees);
-
-        // Ensure that the OpMode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target positions for the motors and pass them to the motor controller
-
-
-            BLDrive.setTargetPosition(newLeftTarget);
-            BRDrive.setTargetPosition(newRightTarget);
-            FLDrive.setTargetPosition(newLeftTarget);
-            FRDrive.setTargetPosition(newRightTarget);
-
-            // Turn On RUN_TO_POSITION mode for the motors
-            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // Reset the timeout time and start motion
-            runtime.reset();
-            BLDrive.setPower(speed);
-            BRDrive.setPower(speed);
-            FLDrive.setPower(speed);
-            FRDrive.setPower(speed);
-
-            // Keep looping while we are still active, there is time left, and both motors are running.
-            // The move will stop when any of these conditions are met.
-            while (opModeIsActive()) {
-
-                // Display target and current position for the driver
-                telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget );
-                telemetry.addData("Currently at",  " at %7d :%7d :%7d :%7d",
+                telemetry.addData("Currently at",  " at %7d :%7d",
                         FLDrive.getCurrentPosition(), BLDrive.getCurrentPosition(),
                         BRDrive.getCurrentPosition(), FRDrive.getCurrentPosition());
                 telemetry.update();

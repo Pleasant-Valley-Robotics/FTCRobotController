@@ -21,8 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@TeleOp(name = "V1.1", group = "Iterative Opmode")
-public class RobotAlpha extends LinearOpMode {
+@TeleOp(name = "TestingAuto", group = "Iterative Opmode")
+public class TestingAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor FLDrive = null; // standard motor declarations
@@ -40,28 +40,28 @@ public class RobotAlpha extends LinearOpMode {
         FRDrive = hardwareMap.get(DcMotor.class, "FRDrive");
         BLDrive = hardwareMap.get(DcMotor.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
-        STRAIGHTUUUPPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUP");
-        liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
-        leftLift = hardwareMap.get(DcMotor.class, "leftLift");
-        rightLift = hardwareMap.get(DcMotor.class, "rightLift");
+        //STRAIGHTUUUPPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUP");
+        //liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
+        //leftLift = hardwareMap.get(DcMotor.class, "leftLift");
+        //rightLift = hardwareMap.get(DcMotor.class, "rightLift");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.REVERSE);
         FRDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
-        STRAIGHTUUUPPPPP.setDirection(DcMotorSimple.Direction.FORWARD);
-        liftJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
+        //STRAIGHTUUUPPPPP.setDirection(DcMotorSimple.Direction.FORWARD);
+        //liftJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+        //leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
+        //rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
 
         FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        STRAIGHTUUUPPPPP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //STRAIGHTUUUPPPPP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //liftJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -129,7 +129,7 @@ public class RobotAlpha extends LinearOpMode {
                 STRAIGHTUUUPPPPP.setPower(0.7);
             }
             */
-
+/*
             // For analog
             double liftJoystick = gamepad2.left_stick_y;
             if(liftJoystick>1){
@@ -161,7 +161,7 @@ public class RobotAlpha extends LinearOpMode {
             }
             */
 
-
+/*
             //analog
             double jointMove = gamepad2.right_stick_y;
             if(jointMove>1.0){
@@ -173,7 +173,7 @@ public class RobotAlpha extends LinearOpMode {
             } else{
                 liftJoint.setPower(0);
             }
-
+*/
             double botHeadingDeg = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             double rotate = botHeadingDeg - desiredHeading; // algorithm for automatic turning
             rotate += 540;
