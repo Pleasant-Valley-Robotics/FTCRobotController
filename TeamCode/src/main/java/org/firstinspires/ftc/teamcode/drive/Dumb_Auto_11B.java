@@ -130,16 +130,17 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
             // Keep looping while we are still active, there is time left, and both motors are running.
             // The move will stop when any of these conditions are met.
-//            while (opModeIsActive()) {
-//
+            while (opModeIsActive()) {
+
                 // Display target and current position for the driver
-                telemetry.addData("Running to",  " %7d :%7d :%7d :%7d", newFLeftTarget,  newFRightTarget, newBLeftTarget,
-                        newBRightTarget );
-                telemetry.addData("Currently at",  " at %7d :%7d :%7d :%7d",
+                telemetry.addData("Running to",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
+                        newFLeftTarget, newFRightTarget,
+                        newBLeftTarget, newBRightTarget );
+                telemetry.addData("Currently at",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
                         FLDrive.getCurrentPosition(), FRDrive.getCurrentPosition(),
                         BLDrive.getCurrentPosition(), BRDrive.getCurrentPosition());
                 telemetry.update();
-//            }
+            }
 
             // Stop the motors once the move is complete
             FLDrive.setPower(0);
