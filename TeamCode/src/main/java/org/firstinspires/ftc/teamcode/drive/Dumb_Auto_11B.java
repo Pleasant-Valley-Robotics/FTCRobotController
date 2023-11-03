@@ -23,10 +23,10 @@ public class Dumb_Auto_11B extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime(); // Timer for tracking time
 
     // Constants for calculating encoder counts and speed
-    static final double COUNTS_PER_MOTOR_REV = 560; // Encoder counts per motor revolution
-    static final double DRIVE_GEAR_REDUCTION = 1.0; // No external gearing
-    static final double WHEEL_DIAMETER_INCHES = 2.95975; // Diameter of the robot's wheels
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_MOTOR_REV = 28; // Encoder counts per motor revolution
+    static final double DRIVE_GEAR_REDUCTION = 20; // No external gearing
+    static final double WHEEL_DIAMETER_INCHES = 96/25.4; // Diameter of the robot's wheels in mm/(mm/in)
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
     @Override
     public void runOpMode() {
@@ -195,8 +195,10 @@ public class Dumb_Auto_11B extends LinearOpMode {
             while (opModeIsActive()) {
 
                 // Display target and current position for the driver
-                telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget );
-                telemetry.addData("Currently at",  " at %7d :%7d :%7d :%7d",
+                telemetry.addData("Running to",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
+                        newLeftTarget, newRightTarget,
+                        newLeftTarget, newRightTarget);
+                telemetry.addData("Currently at",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
                         FLDrive.getCurrentPosition(), BLDrive.getCurrentPosition(),
                         BRDrive.getCurrentPosition(), FRDrive.getCurrentPosition());
                 telemetry.update();
