@@ -40,8 +40,8 @@ public class Dumb_Auto_11B extends LinearOpMode {
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
 
         // Set motor directions and behaviors
-        FLDrive.setDirection(DcMotor.Direction.FORWARD);
-        BLDrive.setDirection(DcMotor.Direction.REVERSE);
+        FLDrive.setDirection(DcMotor.Direction.REVERSE);
+        BLDrive.setDirection(DcMotor.Direction.FORWARD);
         FRDrive.setDirection(DcMotor.Direction.REVERSE);
         BRDrive.setDirection(DcMotor.Direction.FORWARD);
         FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -60,11 +60,9 @@ public class Dumb_Auto_11B extends LinearOpMode {
         BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at",  "%7d :%7d :%7d :%7d",
-                FLDrive.getCurrentPosition(),
-                BLDrive.getCurrentPosition(),
-                FRDrive.getCurrentPosition(),
-                BRDrive.getCurrentPosition()
+        telemetry.addData("Starting at",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
+                FLDrive.getCurrentPosition(), BLDrive.getCurrentPosition(),
+                FRDrive.getCurrentPosition(), BRDrive.getCurrentPosition()
         );
         telemetry.update();
 
