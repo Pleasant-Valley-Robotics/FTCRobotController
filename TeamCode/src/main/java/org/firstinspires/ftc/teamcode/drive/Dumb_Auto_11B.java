@@ -74,7 +74,7 @@ public class Dumb_Auto_11B extends LinearOpMode {
         // Move the robot using the encoderDrive and encoderTurn methods
 
         encoderDrive(0.5,  30,  30, 30, 30, 10);
-        encoderDrive(-0.5,  28,  28, 28, 28, 10);
+        encoderDrive(0.5,  -28,  -28, -28, -28, 10);
         encoderTurn(0.3, 90);
         encoderDrive(0.5, 95, 95, 95, 95, 10);
 
