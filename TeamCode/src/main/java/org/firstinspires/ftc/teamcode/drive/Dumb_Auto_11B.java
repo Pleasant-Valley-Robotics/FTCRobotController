@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Test Auto V1.0.0")
+@Autonomous(name="Test Auto V1.0.1")
 public class Dumb_Auto_11B extends LinearOpMode {
     /* Declare OpMode members. */
 
@@ -71,11 +71,12 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        // Move the robot using the encoderDrive method
-        encoderDrive(0.7,  30,  30, 30, 30);
-        encoderDrive(-0.7,  28,  28, 28, 28);
+        // Move the robot using the encoderDrive and encoderTurn methods
+
+        encoderDrive(0.5,  30,  30, 30, 30, 10);
+        encoderDrive(-0.5,  28,  28, 28, 28, 10);
         encoderTurn(0.3, 90);
-        encoderDrive(0.7, 95, 95, 95, 95);
+        encoderDrive(0.5, 95, 95, 95, 95, 10);
 
 
         // Display a message when the path is complete
@@ -92,8 +93,14 @@ public class Dumb_Auto_11B extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the OpMode running.
      */
+    public boolean motorsAreBusy()
+    {
+        return BLDrive.isBusy() || FLDrive.isBusy() || FRDrive.isBusy() || BRDrive.isBusy();
+    }
+
     public void encoderDrive(double speed,
-                             double BleftInches, double BrightInches, double FleftInches, double FrightInches) {
+                             double BleftInches, double BrightInches, double FleftInches, double FrightInches,
+                             double timeoutS) {
         int newBLeftTarget;
         int newBRightTarget;
         int newFLeftTarget;
@@ -128,8 +135,8 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
             // Keep looping while we are still active, there is time left, and both motors are running.
             // The move will stop when any of these conditions are met.
-            while (opModeIsActive()) {
-
+            while (opModeIsActive() && motorsAreBusy() && runtime.seconds() < timeoutS)
+            {
                 // Display target and current position for the driver
                 telemetry.addData("Running to",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
                         newFLeftTarget, newFRightTarget,
@@ -138,6 +145,11 @@ public class Dumb_Auto_11B extends LinearOpMode {
                         FLDrive.getCurrentPosition(), FRDrive.getCurrentPosition(),
                         BLDrive.getCurrentPosition(), BRDrive.getCurrentPosition());
                 telemetry.update();
+
+//                if( (BLDrive.getCurrentPosition() < (BleftInches + 10) && (newBLeftTarget > (BLDrive.getCurrentPosition() - 10)) ||
+//                    (BRDrive.getCurrentPosition() < (BrightInches + 10) && (newBRightTarget > (BRDrive.getCurrentPosition() - 10)){
+//                    break;
+//                }
             }
 
             // Stop the motors once the move is complete
@@ -156,26 +168,32 @@ public class Dumb_Auto_11B extends LinearOpMode {
         }
     }
 
-    public void encoderTurn(double speed,
-                             int degrees) {
-        int newLeftTarget;
-        int newRightTarget;
+    public void encoderTurn(double speed, double degrees){
+        final double DEGREES_TO_TICKS = 8.12;
+        int ticks = (int) (degrees * DEGREES_TO_TICKS);
+        robotTurn(speed, ticks, ticks, ticks, ticks);
+    }
 
-        final double DEGREES_TO_TICKS = 78.15;
-
-        newLeftTarget = (int)(DEGREES_TO_TICKS * degrees);
-        newRightTarget = (int)(DEGREES_TO_TICKS * degrees);
+    public void robotTurn(double speed,
+                             int BleftInches, int BrightInches, int FleftInches, int FrightInches) {
+        int newBLeftTarget;
+        int newBRightTarget;
+        int newFLeftTarget;
+        int newFRightTarget;
 
         // Ensure that the OpMode is still active
         if (opModeIsActive()) {
 
             // Determine new target positions for the motors and pass them to the motor controller
+            newBLeftTarget = BLDrive.getCurrentPosition() + BleftInches;
+            newBRightTarget = -(BRDrive.getCurrentPosition() + BrightInches);
+            newFLeftTarget = FLDrive.getCurrentPosition() + FleftInches;
+            newFRightTarget = -(FRDrive.getCurrentPosition() + FrightInches);
 
-
-            BLDrive.setTargetPosition(newLeftTarget);
-            BRDrive.setTargetPosition(newRightTarget);
-            FLDrive.setTargetPosition(newLeftTarget);
-            FRDrive.setTargetPosition(newRightTarget);
+            BLDrive.setTargetPosition(newBLeftTarget);
+            BRDrive.setTargetPosition(newBRightTarget);
+            FLDrive.setTargetPosition(newFLeftTarget);
+            FRDrive.setTargetPosition(newFRightTarget);
 
             // Turn On RUN_TO_POSITION mode for the motors
             BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -186,9 +204,9 @@ public class Dumb_Auto_11B extends LinearOpMode {
             // Reset the timeout time and start motion
             runtime.reset();
             BLDrive.setPower(speed);
-            BRDrive.setPower(speed);
+            BRDrive.setPower(-speed);
             FLDrive.setPower(speed);
-            FRDrive.setPower(speed);
+            FRDrive.setPower(-speed);
 
             // Keep looping while we are still active, there is time left, and both motors are running.
             // The move will stop when any of these conditions are met.
@@ -196,11 +214,11 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
                 // Display target and current position for the driver
                 telemetry.addData("Running to",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
-                        newLeftTarget, newRightTarget,
-                        newLeftTarget, newRightTarget);
+                        newFLeftTarget, newFRightTarget,
+                        newBLeftTarget, newBRightTarget );
                 telemetry.addData("Currently at",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
-                        FLDrive.getCurrentPosition(), BLDrive.getCurrentPosition(),
-                        BRDrive.getCurrentPosition(), FRDrive.getCurrentPosition());
+                        FLDrive.getCurrentPosition(), FRDrive.getCurrentPosition(),
+                        BLDrive.getCurrentPosition(), BRDrive.getCurrentPosition());
                 telemetry.update();
             }
 
