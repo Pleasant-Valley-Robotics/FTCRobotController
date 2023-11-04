@@ -171,11 +171,11 @@ public class Dumb_Auto_11B extends LinearOpMode {
     public void encoderTurn(double speed, double degrees){
         final double DEGREES_TO_TICKS = 8.12;
         int ticks = (int) (degrees * DEGREES_TO_TICKS);
-        robotTurn(speed, ticks, ticks, ticks, ticks);
+        robotTurn(speed, ticks, ticks, ticks, ticks, 5);
     }
 
     public void robotTurn(double speed,
-                             int BleftInches, int BrightInches, int FleftInches, int FrightInches) {
+                             int BleftInches, int BrightInches, int FleftInches, int FrightInches, double timeoutS) {
         int newBLeftTarget;
         int newBRightTarget;
         int newFLeftTarget;
@@ -210,7 +210,7 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
             // Keep looping while we are still active, there is time left, and both motors are running.
             // The move will stop when any of these conditions are met.
-            while (opModeIsActive()) {
+            while (opModeIsActive() && motorsAreBusy() && runtime.seconds() < timeoutS) {
 
                 // Display target and current position for the driver
                 telemetry.addData("Running to",  "\nFL:%7d FR:%7d\nBL:%7d BR:%7d",
