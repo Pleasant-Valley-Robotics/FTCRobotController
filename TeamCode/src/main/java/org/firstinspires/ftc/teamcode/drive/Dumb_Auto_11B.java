@@ -24,7 +24,7 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
     // Constants for calculating encoder counts and speed
     static final double COUNTS_PER_MOTOR_REV = 28; // Encoder counts per motor revolution
-    static final double DRIVE_GEAR_REDUCTION = 20; // No external gearing
+    static final double DRIVE_GEAR_REDUCTION = 5.23 * 3.61; //Gear ratio of 5:1 gearbox * 4:1 gearbox
     static final double WHEEL_DIAMETER_INCHES = 96/25.4; // Diameter of the robot's wheels in mm/(mm/in)
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
@@ -74,7 +74,7 @@ public class Dumb_Auto_11B extends LinearOpMode {
         // Move the robot using the encoderDrive and encoderTurn methods
 
         encoderDrive(0.5,  30,  30, 30, 30, 10);
-        encoderDrive(0.5,  -28,  -28, -28, -28, 10);
+        encoderDrive(0.5,  -25,  -25, -25, -25, 10);
         encoderTurn(0.3, 90);
         encoderDrive(0.5, 95, 95, 95, 95, 10);
 

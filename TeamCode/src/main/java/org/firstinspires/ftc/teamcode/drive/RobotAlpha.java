@@ -34,6 +34,10 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor leftLift = null;
         DcMotor rightLift = null;
 
+        CRServo droneLaunch = null;
+        CRServo rightClaw = null;
+        CRServo leftClaw = null;
+
         //Write numerical variables here
         double desiredHeading = 0;
         FLDrive = hardwareMap.get(DcMotor.class, "FLDrive");
@@ -45,14 +49,22 @@ public class RobotAlpha extends LinearOpMode {
         leftLift = hardwareMap.get(DcMotor.class, "leftLift");
         rightLift = hardwareMap.get(DcMotor.class, "rightLift");
 
+        droneLaunch = hardwareMap.get(CRServo.class, "droneLaunch");
+        rightClaw = hardwareMap.get(CRServo.class, "rightClaw");
+        leftClaw = hardwareMap.get(CRServo.class, "leftClaw");
+
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.REVERSE);
         FRDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
-        STRAIGHTUUUPPPPP.setDirection(DcMotorSimple.Direction.FORWARD);
-        liftJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
+        STRAIGHTUUUPPPPP.setDirection(DcMotor.Direction.FORWARD);
+        liftJoint.setDirection(DcMotor.Direction.FORWARD);
+        leftLift.setDirection(DcMotor.Direction.FORWARD);
+        rightLift.setDirection(DcMotor.Direction.FORWARD);
+
+        droneLaunch.setDirection(CRServo.Direction.FORWARD);
+        rightClaw.setDirection(CRServo.Direction.FORWARD);
+        leftClaw.setDirection(CRServo.Direction.REVERSE);
 
         FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -152,6 +164,19 @@ public class RobotAlpha extends LinearOpMode {
                 leftLift.setPower(-0.7);
                 rightLift.setPower(-0.7);
             }
+
+            boolean clawOpen = gamepad2.a;
+            boolean clawClosed = gamepad2.b;
+
+            if(clawOpen&&!clawClosed){
+                rightClaw.setPower(.7);
+                leftClaw.setPower(.7);
+            } else if (clawClosed&&!clawOpen) {
+                rightClaw.setPower(-0.7);
+                leftClaw.setPower(-0.7);
+            }
+
+
 
             //digital
             //boolean jointMove ((gamepad2.right_stick_y)>0.05) || ((gamepad2.right_stick_y)< -0.05);
