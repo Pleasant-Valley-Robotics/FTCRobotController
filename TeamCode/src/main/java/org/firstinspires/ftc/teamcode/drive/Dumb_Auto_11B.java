@@ -75,7 +75,7 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
         encoderDrive(0.5,  30,  30, 30, 30, 10);
         encoderDrive(0.5,  -25,  -25, -25, -25, 10);
-        encoderTurn(0.3, 90);
+        encoderTurn(0.3, 90, 5);
         encoderDrive(0.5, 95, 95, 95, 95, 10);
 
 
@@ -168,10 +168,11 @@ public class Dumb_Auto_11B extends LinearOpMode {
         }
     }
 
-    public void encoderTurn(double speed, double degrees){
-        final double DEGREES_TO_TICKS = 8.12;
-        int ticks = (int) (degrees * DEGREES_TO_TICKS);
-        robotTurn(speed, ticks, ticks, ticks, ticks, 5);
+    // Positive degree is a clockwise turn
+    public void encoderTurn(double speed, double degrees, double timeoutS){
+        final double DEGREES_TO_INCHES = 90/12; //90 degrees/12 inches in a 90 degree turn - See
+        int inches = (int) (degrees * DEGREES_TO_INCHES);
+        encoderDrive(speed, inches, -inches, inches, -inches, timeoutS);
     }
 
     public void robotTurn(double speed,
