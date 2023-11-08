@@ -170,9 +170,9 @@ public class Dumb_Auto_11B extends LinearOpMode {
 
     // Positive degree is a clockwise turn
     public void encoderTurn(double speed, double degrees, double timeoutS){
-        final double DEGREES_TO_INCHES = 90/12; //90 degrees/12 inches in a 90 degree turn - See
-        int inches = (int) (degrees * DEGREES_TO_INCHES);
-        encoderDrive(speed, inches, -inches, inches, -inches, timeoutS);
+        final double DEGREES_TO_INCHES = 12/90; //12 inches / 90 degrees (in/deg)
+        double inches = (degrees * DEGREES_TO_INCHES);
+        encoderDrive(.3, 12, -12, 12, -12, 10);
     }
 
     public void robotTurn(double speed,
