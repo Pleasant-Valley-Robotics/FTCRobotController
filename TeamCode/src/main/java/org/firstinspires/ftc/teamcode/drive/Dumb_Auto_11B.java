@@ -172,11 +172,12 @@ public class Dumb_Auto_11B extends LinearOpMode {
     public void encoderTurn(double speed, double degrees, double timeoutS){
         final double DEGREES_TO_INCHES = 12/90; //12 inches / 90 degrees (in/deg)
         double inches = (degrees * DEGREES_TO_INCHES);
-        encoderDrive(.3, 12, -12, 12, -12, 10);
+        //encoderDrive(speed, 12, -12, 12, -12, 10);
+        robotTurn(speed, inches, inches, inches, inches, timeoutS);
     }
 
     public void robotTurn(double speed,
-                             int BleftInches, int BrightInches, int FleftInches, int FrightInches, double timeoutS) {
+                             double BleftInches, double BrightInches, double FleftInches, double FrightInches, double timeoutS) {
         int newBLeftTarget;
         int newBRightTarget;
         int newFLeftTarget;
@@ -186,10 +187,10 @@ public class Dumb_Auto_11B extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target positions for the motors and pass them to the motor controller
-            newBLeftTarget = BLDrive.getCurrentPosition() + BleftInches;
-            newBRightTarget = -(BRDrive.getCurrentPosition() + BrightInches);
-            newFLeftTarget = FLDrive.getCurrentPosition() + FleftInches;
-            newFRightTarget = -(FRDrive.getCurrentPosition() + FrightInches);
+            newBLeftTarget = BLDrive.getCurrentPosition() + (int)(BleftInches * COUNTS_PER_INCH);
+            newBRightTarget = -(BRDrive.getCurrentPosition() + (int)(BrightInches * COUNTS_PER_INCH));
+            newFLeftTarget = FLDrive.getCurrentPosition() + (int)(FleftInches * COUNTS_PER_INCH);
+            newFRightTarget = -(FRDrive.getCurrentPosition() + (int)(FrightInches * COUNTS_PER_INCH));
 
             BLDrive.setTargetPosition(newBLeftTarget);
             BRDrive.setTargetPosition(newBRightTarget);
@@ -205,9 +206,9 @@ public class Dumb_Auto_11B extends LinearOpMode {
             // Reset the timeout time and start motion
             runtime.reset();
             BLDrive.setPower(speed);
-            BRDrive.setPower(-speed);
+            BRDrive.setPower(speed);
             FLDrive.setPower(speed);
-            FRDrive.setPower(-speed);
+            FRDrive.setPower(speed);
 
             // Keep looping while we are still active, there is time left, and both motors are running.
             // The move will stop when any of these conditions are met.
