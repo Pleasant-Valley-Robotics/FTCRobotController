@@ -29,7 +29,7 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor FRDrive = null;
         DcMotor BLDrive = null;
         DcMotor BRDrive = null;
-        DcMotor STRAIGHTUUUPPPPP = null;
+        DcMotor liftDrive = null;
         DcMotor liftJoint = null;
         DcMotor leftLift = null;
         DcMotor rightLift = null;
@@ -44,10 +44,10 @@ public class RobotAlpha extends LinearOpMode {
         FRDrive = hardwareMap.get(DcMotor.class, "FRDrive");
         BLDrive = hardwareMap.get(DcMotor.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
-        STRAIGHTUUUPPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUP");
+        liftDrive = hardwareMap.get(DcMotor.class, "liftDrive");
         liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
-        leftLift = hardwareMap.get(DcMotor.class, "leftLift");
-        rightLift = hardwareMap.get(DcMotor.class, "rightLift");
+        leftLift = hardwareMap.get(DcMotor.class, "leftActuator");
+        rightLift = hardwareMap.get(DcMotor.class, "rightActuator");
 
         droneLaunch = hardwareMap.get(CRServo.class, "droneLaunch");
         rightClaw = hardwareMap.get(CRServo.class, "rightClaw");
@@ -57,7 +57,7 @@ public class RobotAlpha extends LinearOpMode {
         BLDrive.setDirection(DcMotor.Direction.REVERSE);
         FRDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
-        STRAIGHTUUUPPPPP.setDirection(DcMotor.Direction.FORWARD);
+        liftDrive.setDirection(DcMotor.Direction.FORWARD);
         liftJoint.setDirection(DcMotor.Direction.FORWARD);
         leftLift.setDirection(DcMotor.Direction.FORWARD);
         rightLift.setDirection(DcMotor.Direction.FORWARD);
@@ -70,7 +70,7 @@ public class RobotAlpha extends LinearOpMode {
         BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        STRAIGHTUUUPPPPP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -125,11 +125,11 @@ public class RobotAlpha extends LinearOpMode {
             //TODO: WRITE MORE CODE HERE TO MAKE MOTORS MOVE
 /* THIS CODE IS FOR USING THE LIFT WITH BUTTONS. TESTING PURPOSES ONLY!
             if(gamepad2.x && (!gamepad2.y)){
-               STRAIGHTUUUPPPPP.setPower(0.7);
+               liftDrive.setPower(0.7);
             }else if(gamepad2.y && !(gamepad2.x)){
-                STRAIGHTUUUPPPPP.setPower(-0.7);
+                liftDrive.setPower(-0.7);
             }else{
-                STRAIGHTUUUPPPPP.setPower(0);
+                liftDrive.setPower(0);
             }
 */
 
@@ -138,7 +138,7 @@ public class RobotAlpha extends LinearOpMode {
             //boolean liftJoysick = ((gamepad2.left_stick_y)>0.05) || ((gamepad2.left_stick_y)< -0.05);
             /*
             if (liftJoystick){
-                STRAIGHTUUUPPPPP.setPower(0.7);
+                liftDrive.setPower(0.7);
             }
             */
 
@@ -149,18 +149,18 @@ public class RobotAlpha extends LinearOpMode {
             }
 
             if(liftJoystick>0.05 || liftJoystick<-0.05){
-                STRAIGHTUUUPPPPP.setPower(liftJoystick);
+                liftDrive.setPower(liftJoystick);
             } else{
-                STRAIGHTUUUPPPPP.setPower(0);
+                liftDrive.setPower(0);
             }
 
-            boolean liftMoveUp = gamepad2.dpad_up;
-            boolean liftMoveDown = gamepad2.dpad_down;
+            boolean actuatorMoveUp = gamepad2.dpad_up;
+            boolean actuatorMoveDown = gamepad2.dpad_down;
 
-            if(liftMoveUp && !liftMoveDown){
+            if(actuatorMoveUp && !actuatorMoveDown){
                 leftLift.setPower(0.7);
                 rightLift.setPower(0.7);
-            } else if(liftMoveDown && !liftMoveUp){
+            } else if(actuatorMoveDown && !actuatorMoveUp){
                 leftLift.setPower(-0.7);
                 rightLift.setPower(-0.7);
             }

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Test Auto V1.0.1")
+@Autonomous(name="Test Auto V1.0.2")
 public class Dumb_Auto_11B extends LinearOpMode {
     /* Declare OpMode members. */
 
@@ -73,10 +73,11 @@ public class Dumb_Auto_11B extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Move the robot using the encoderDrive and encoderTurn methods
 
-        encoderDrive(0.5,  30,  30, 30, 30, 10);
-        encoderDrive(0.5,  -25,  -25, -25, -25, 10);
+        //encoderDrive(0.5,  30,  30, 30, 30, 10);
+        //encoderDrive(0.5,  -25,  -25, -25, -25, 10);
         encoderTurn(0.3, 90, 5);
-        encoderDrive(0.5, 95, 95, 95, 95, 10);
+        //encoderDrive(0.5, 95, 95, 95, 95, 10);
+
 
 
         // Display a message when the path is complete

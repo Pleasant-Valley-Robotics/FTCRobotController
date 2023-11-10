@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-//import org.firstinspires.ftc.teamcode.util.Encoder;
 
 @TeleOp(name = "TestingAuto", group = "Iterative Opmode")
 public class TestingTele extends LinearOpMode {
@@ -19,10 +18,10 @@ public class TestingTele extends LinearOpMode {
         DcMotor FRDrive = null;
         DcMotor BLDrive = null;
         DcMotor BRDrive = null;
-        DcMotor STRAIGHTUUUPPPPP = null;
+        DcMotor liftDrive = null;
         DcMotor liftJoint = null;
-        DcMotor leftLift = null;
-        DcMotor rightLift = null;
+        DcMotor leftActuator = null;
+        DcMotor rightActuator = null;
 
         //Write numerical variables here
         double desiredHeading = 0;
@@ -30,28 +29,28 @@ public class TestingTele extends LinearOpMode {
         FRDrive = hardwareMap.get(DcMotor.class, "FRDrive");
         BLDrive = hardwareMap.get(DcMotor.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
-        //STRAIGHTUUUPPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUP");
-        //liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
-        //leftLift = hardwareMap.get(DcMotor.class, "leftLift");
-        //rightLift = hardwareMap.get(DcMotor.class, "rightLift");
+        liftDrive = hardwareMap.get(DcMotor.class, "liftDrive");
+        liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
+        leftActuator = hardwareMap.get(DcMotor.class, "leftLift");
+        rightActuator = hardwareMap.get(DcMotor.class, "rightLift");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.REVERSE);
         FRDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
-        //STRAIGHTUUUPPPPP.setDirection(DcMotorSimple.Direction.FORWARD);
-        //liftJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-        //leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
-        //rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftDrive.setDirection(DcMotor.Direction.FORWARD);
+        liftJoint.setDirection(DcMotor.Direction.FORWARD);
+        leftActuator.setDirection(DcMotor.Direction.FORWARD);
+        rightActuator.setDirection(DcMotor.Direction.FORWARD);
 
         FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //STRAIGHTUUUPPPPP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //liftJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -80,7 +79,7 @@ public class TestingTele extends LinearOpMode {
             double x = -gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
 
-            if (gamepad1.y) { // automatic turning commands
+            if (gamepad1.y) {  //automatic turning commands
                 desiredHeading = yHeading;
             }
             if (gamepad1.x) {
@@ -101,57 +100,67 @@ public class TestingTele extends LinearOpMode {
             }
 
             //TODO: WRITE MORE CODE HERE TO MAKE MOTORS MOVE
-/* THIS CODE IS FOR USING THE LIFT WITH BUTTONS. TESTING PURPOSES ONLY!
+ //THIS CODE IS FOR USING THE LIFT WITH BUTTONS. TESTING PURPOSES ONLY!
             if(gamepad2.x && (!gamepad2.y)){
-               STRAIGHTUUUPPPPP.setPower(0.7);
+               liftDrive.setPower(0.7);
             }else if(gamepad2.y && !(gamepad2.x)){
-                STRAIGHTUUUPPPPP.setPower(-0.7);
+                liftDrive.setPower(-0.7);
             }else{
-                STRAIGHTUUUPPPPP.setPower(0);
+                liftDrive.setPower(0);
             }
-*/
+
 
             //THIS CODE IS FOR USING THE LIFT WITH JOYSICKS LIKE A NORMAL PERSON
-            // For digital
+             //For digital
             //boolean liftJoysick = ((gamepad2.left_stick_y)>0.05) || ((gamepad2.left_stick_y)< -0.05);
-            /*
-            if (liftJoystick){
-                STRAIGHTUUUPPPPP.setPower(0.7);
+            
+            /*if (liftJoystick){
+                liftDrive.setPower(0.7);
             }
             */
-/*
-            // For analog
+
+             //For analog
             double liftJoystick = gamepad2.left_stick_y;
             if(liftJoystick>1){
                 liftJoystick = 1.0;
             }
-
-            if(liftJoystick>0.05 || liftJoystick<-0.05){
-                STRAIGHTUUUPPPPP.setPower(liftJoystick);
-            } else{
-                STRAIGHTUUUPPPPP.setPower(0);
+            
+            if(liftJoystick<-1){
+                liftJoystick = -1.0;
             }
 
-            boolean liftMoveUp = gamepad2.dpad_up;
-            boolean liftMoveDown = gamepad2.dpad_down;
+            if(liftJoystick>0.05 || liftJoystick<-0.05){
+                liftDrive.setPower(liftJoystick);
+            } else{
+                liftDrive.setPower(0);
+            }
+            //End of liftDrive code
+            
+            //Start of Actuator
 
-            if(liftMoveUp && !liftMoveDown){
-                leftLift.setPower(0.7);
-                rightLift.setPower(0.7);
-            } else if(liftMoveDown && !liftMoveUp){
-                leftLift.setPower(-0.7);
-                rightLift.setPower(-0.7);
+            boolean actuatorMoveUp = gamepad2.dpad_up;
+            boolean actuatorMoveDown = gamepad2.dpad_down;
+
+            if(actuatorMoveUp && !actuatorMoveDown){
+                leftActuator.setPower(0.7);
+                rightActuator.setPower(0.7);
+            } else if(actuatorMoveDown && !actuatorMoveUp){
+                leftActuator.setPower(-0.7);
+                rightActuator.setPower(-0.7);
             }
 
             //digital
-            //boolean jointMove ((gamepad2.right_stick_y)>0.05) || ((gamepad2.right_stick_y)< -0.05);
             /*
+            boolean jointMove ((gamepad2.right_stick_y)>0.05) || ((gamepad2.right_stick_y)< -0.05);
+            
             if (jointMove){
                 liftJoint.setPower(0.7);
             }
-            */
 
-/*
+             */
+            
+
+
             //analog
             double jointMove = gamepad2.right_stick_y;
             if(jointMove>1.0){
@@ -163,7 +172,7 @@ public class TestingTele extends LinearOpMode {
             } else{
                 liftJoint.setPower(0);
             }
-*/
+
             double botHeadingDeg = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             double rotate = botHeadingDeg - desiredHeading; // algorithm for automatic turning
             rotate += 540;
