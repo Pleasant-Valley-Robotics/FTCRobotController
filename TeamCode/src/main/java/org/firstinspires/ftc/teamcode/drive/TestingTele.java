@@ -31,8 +31,8 @@ public class TestingTele extends LinearOpMode {
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
         liftDrive = hardwareMap.get(DcMotor.class, "liftDrive");
         liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
-        leftActuator = hardwareMap.get(DcMotor.class, "leftLift");
-        rightActuator = hardwareMap.get(DcMotor.class, "rightLift");
+        leftActuator = hardwareMap.get(DcMotor.class, "leftActuator");
+        rightActuator = hardwareMap.get(DcMotor.class, "rightActuator");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.REVERSE);

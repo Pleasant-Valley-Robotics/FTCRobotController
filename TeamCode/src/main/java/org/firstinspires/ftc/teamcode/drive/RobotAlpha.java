@@ -31,8 +31,8 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor BRDrive = null;
         DcMotor liftDrive = null;
         DcMotor liftJoint = null;
-        DcMotor leftLift = null;
-        DcMotor rightLift = null;
+        DcMotor leftActuator = null;
+        DcMotor rightActuator = null;
 
         CRServo droneLaunch = null;
         CRServo rightClaw = null;
@@ -46,8 +46,8 @@ public class RobotAlpha extends LinearOpMode {
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
         liftDrive = hardwareMap.get(DcMotor.class, "liftDrive");
         liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
-        leftLift = hardwareMap.get(DcMotor.class, "leftActuator");
-        rightLift = hardwareMap.get(DcMotor.class, "rightActuator");
+        leftActuator = hardwareMap.get(DcMotor.class, "leftActuator");
+        rightActuator = hardwareMap.get(DcMotor.class, "rightActuator");
 
         droneLaunch = hardwareMap.get(CRServo.class, "droneLaunch");
         rightClaw = hardwareMap.get(CRServo.class, "rightClaw");
@@ -59,8 +59,8 @@ public class RobotAlpha extends LinearOpMode {
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         liftDrive.setDirection(DcMotor.Direction.FORWARD);
         liftJoint.setDirection(DcMotor.Direction.FORWARD);
-        leftLift.setDirection(DcMotor.Direction.FORWARD);
-        rightLift.setDirection(DcMotor.Direction.FORWARD);
+        leftActuator.setDirection(DcMotor.Direction.FORWARD);
+        rightActuator.setDirection(DcMotor.Direction.FORWARD);
 
         droneLaunch.setDirection(CRServo.Direction.FORWARD);
         rightClaw.setDirection(CRServo.Direction.FORWARD);
@@ -72,8 +72,8 @@ public class RobotAlpha extends LinearOpMode {
         BRDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -158,11 +158,15 @@ public class RobotAlpha extends LinearOpMode {
             boolean actuatorMoveDown = gamepad2.dpad_down;
 
             if(actuatorMoveUp && !actuatorMoveDown){
-                leftLift.setPower(0.7);
-                rightLift.setPower(0.7);
+                leftActuator.setPower(0.7);
+                rightActuator.setPower(0.7);
             } else if(actuatorMoveDown && !actuatorMoveUp){
-                leftLift.setPower(-0.7);
-                rightLift.setPower(-0.7);
+                leftActuator.setPower(-0.7);
+                rightActuator.setPower(-0.7);
+            }
+            else {
+                leftActuator.setPower(0);
+                rightActuator.setPower(0);
             }
 
             boolean clawOpen = gamepad2.a;
