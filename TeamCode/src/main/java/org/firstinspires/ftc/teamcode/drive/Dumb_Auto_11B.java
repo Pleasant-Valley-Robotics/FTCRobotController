@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Test Auto V1.0.2")
+@Autonomous(name="Test Auto V1.0.3")
 public class Dumb_Auto_11B extends LinearOpMode {
     /* Declare OpMode members. */
 
@@ -74,8 +74,10 @@ public class Dumb_Auto_11B extends LinearOpMode {
         // Move the robot using the encoderDrive and encoderTurn methods
 
         //encoderDrive(0.5,  30,  30, 30, 30, 10);
-        //encoderDrive(0.5,  -25,  -25, -25, -25, 10);
-        encoderTurn(0.3, 90, 5);
+        encoderDrive(0.5,  -25,  -25, -25, -25, 10);
+        encoderDrive(0.5, 12/90*90, -12/90*90, 12/90*90, -12/90*90, 10);
+        //encoderTurn(0.3, 90, 5);
+        //robotTurn(0.3, 12, 12, 12, 12, 10);
         //encoderDrive(0.5, 95, 95, 95, 95, 10);
 
 
@@ -207,9 +209,9 @@ public class Dumb_Auto_11B extends LinearOpMode {
             // Reset the timeout time and start motion
             runtime.reset();
             BLDrive.setPower(speed);
-            BRDrive.setPower(speed);
+            BRDrive.setPower(-speed);
             FLDrive.setPower(speed);
-            FRDrive.setPower(speed);
+            FRDrive.setPower(-speed);
 
             // Keep looping while we are still active, there is time left, and both motors are running.
             // The move will stop when any of these conditions are met.
