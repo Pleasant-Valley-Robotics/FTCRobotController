@@ -29,10 +29,16 @@
 
 package org.firstinspires.ftc.teamcode.drive;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -93,7 +99,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 @Disabled
 public class Gyro_Auto extends LinearOpMode {
 
+    /*telemetry.addData("LED", bLedOn ? "On" : "Off");
+            telemetry.addData("Clear", colorSensor.alpha());
+            telemetry.addData("Red  ", colorSensor.red());
+            telemetry.addData("Green", colorSensor.green());
+            telemetry.addData("Blue ", colorSensor.blue());
+            telemetry.addData("Hue", hsvValues[0]);
+
+     */
+    int colorSensorRed = 0;
+    int colorSensorGreen = 0;
+    int colorSensorBlue = 0;
+    float colorSensorHue = 0;
+    int colorSensorClear = 0;
     /* Declare OpMode members. */
+    ColorSensor colorSensor = null;    // Hardware Device Object
+
     DcMotor FLDrive = null; // Front Left Drive Motor
     DcMotor FRDrive = null; // Front Right Drive Motor
     DcMotor BLDrive = null; // Back Left Drive Motor
@@ -199,9 +220,11 @@ public class Gyro_Auto extends LinearOpMode {
 
         // Set the encoders for closed loop speed control, and reset the heading.
 
-        imu.resetYaw();
+    imu.resetYaw();
 
-        // Step through each leg of the path,
+
+
+    // Step through each leg of the path,
         // Notes:   Reverse movement is obtained by setting a negative distance (not speed)
         //          holdHeading() is used after turns to let the heading stabilize
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
@@ -239,6 +262,81 @@ public class Gyro_Auto extends LinearOpMode {
      */
 
     // **********  HIGH Level driving functions.  ********************
+    public void colorCheck() {
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F,0F,0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        // get a reference to the RelativeLayout so we can change the background
+        // color of the Robot Controller app to match the hue detected by the RGB sensor.
+        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
+        // bPrevState and bCurrState represent the previous and current state of the button.
+        boolean bPrevState = false;
+        boolean bCurrState = false;
+
+        // bLedOn represents the state of the LED.
+        boolean bLedOn = true;
+
+        // get a reference to our ColorSensor object.
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
+
+        // Set the LED in the beginning
+        colorSensor.enableLed(bLedOn);
+        // check the status of the x button on either gamepad.
+        bCurrState = true;
+
+        // check for button state transitions.
+        if (bCurrState && (bCurrState != bPrevState)) {
+
+            // button is transitioning to a pressed state. So Toggle LED
+            bLedOn = !bLedOn;
+            colorSensor.enableLed(bLedOn);
+        }
+
+        // update previous state variable.
+        bPrevState = bCurrState;
+
+        // convert the RGB values to HSV values.
+        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("LED", bLedOn ? "On" : "Off");
+        telemetry.addData("Clear", colorSensor.alpha());
+        telemetry.addData("Red  ", colorSensor.red());
+        telemetry.addData("Green", colorSensor.green());
+        telemetry.addData("Blue ", colorSensor.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+
+        colorSensorClear = colorSensor.alpha();
+        colorSensorRed = colorSensor.red();
+        colorSensorGreen = colorSensor.green();
+        colorSensorBlue = colorSensor.blue();
+        colorSensorHue = hsvValues[0];
+
+        // change the background color to match the color detected by the RGB sensor.
+        // pass a reference to the hue, saturation, and value array as an argument
+        // to the HSVToColor method.
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
+            }
+        });
+
+        telemetry.update();
+
+        // Set the panel back to the default color
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                relativeLayout.setBackgroundColor(Color.WHITE);
+            }
+        });
+
+    }
+
 
     /**
     *  Drive in a straight line, on a fixed compass heading (angle), based on encoder counts.
