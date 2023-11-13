@@ -192,6 +192,15 @@ public class RobotAlpha extends LinearOpMode {
             }
             telemetry.addData("Red  ", colorSensor.red());
 
+            boolean launchDroneServo = gamepad2.y;
+            if (launchDroneServo = true){
+                droneLaunch.setPower(0.7);
+            }
+            else
+            {
+                droneLaunch.setPower(0);
+            }
+
 
             //digital
             //boolean jointMove ((gamepad2.right_stick_y)>0.05) || ((gamepad2.right_stick_y)< -0.05);
