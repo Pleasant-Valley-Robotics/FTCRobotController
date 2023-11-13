@@ -36,9 +36,9 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor rightActuator = null;
         ColorSensor colorSensor = null;
 
-        CRServo droneLaunch = null;
-        CRServo rightClaw = null;
-        CRServo leftClaw = null;
+        Servo droneLaunch = null;
+        Servo rightClaw = null;
+        Servo leftClaw = null;
 
         //Write numerical variables here
         double desiredHeading = 0;
@@ -52,9 +52,9 @@ public class RobotAlpha extends LinearOpMode {
         rightActuator = hardwareMap.get(DcMotor.class, "rightActuator");
         colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
 
-        droneLaunch = hardwareMap.get(CRServo.class, "droneLaunch");
-        rightClaw = hardwareMap.get(CRServo.class, "rightClaw");
-        leftClaw = hardwareMap.get(CRServo.class, "leftClaw");
+        droneLaunch = hardwareMap.get(Servo.class, "droneLaunch");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -65,9 +65,9 @@ public class RobotAlpha extends LinearOpMode {
         leftActuator.setDirection(DcMotor.Direction.FORWARD);
         rightActuator.setDirection(DcMotor.Direction.FORWARD);
 
-        droneLaunch.setDirection(CRServo.Direction.FORWARD);
-        rightClaw.setDirection(CRServo.Direction.FORWARD);
-        leftClaw.setDirection(CRServo.Direction.REVERSE);
+        droneLaunch.setDirection(Servo.Direction.FORWARD);
+        rightClaw.setDirection(Servo.Direction.FORWARD);
+        leftClaw.setDirection(Servo.Direction.REVERSE);
 
         FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -180,26 +180,37 @@ public class RobotAlpha extends LinearOpMode {
                 rightActuator.setPower(0);
             }
 
-            boolean clawOpen = gamepad2.a;
-            boolean clawClosed = gamepad2.b;
-
-            if(clawOpen&&!clawClosed){
-                rightClaw.setPower(.7);
-                leftClaw.setPower(.7);
-            } else if (clawClosed&&!clawOpen) {
-                rightClaw.setPower(-0.7);
-                leftClaw.setPower(-0.7);
+            if(gamepad2.a){
+                rightClaw.setPosition(0.5);
+                leftClaw.setPosition(0.5);
+            } else if (gamepad2.b) {
+                rightClaw.setPosition(0);
+                leftClaw.setPosition(0);
             }
+
             telemetry.addData("Red  ", colorSensor.red());
 
-            boolean launchDroneServo = gamepad2.right_bumper;
-            if (launchDroneServo == true){
+            /*
+            double launchDroneServo = gamepad2.right_trigger;
+            boolean stopLaunchDroneServo = gamepad2.left_bumper;
+            if (launchDroneServo > 0.2){
                 droneLaunch.setPower(0.7);
             }
-            else
+            else if (stopLaunchDroneServo == true);
             {
                 droneLaunch.setPower(0);
             }
+             */
+            if (gamepad2.right_bumper){
+                droneLaunch.setPosition(0.5);
+            }
+            else if (gamepad2.left_bumper)
+            {
+                droneLaunch.setPosition(0);
+            }
+
+
+            //droneLaunch.setPower(launchDroneServo);
 
 
             //digital
