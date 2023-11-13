@@ -245,19 +245,87 @@ public class Gyro_Auto extends LinearOpMode {
 
         */
 
-        driveStraight(DRIVE_SPEED, 30.0, 0.0);    // Drive Forward 30"
+        double driftMod = 0.88;
+        driveStraight(DRIVE_SPEED, 15 * driftMod, 0);
+        turnToHeading(TURN_SPEED, 15);
+        holdHeading(TURN_SPEED,  15.0, 0.5);    // Hold  15 Deg heading for a 1/2 second
+        driveStraight(DRIVE_SPEED, 10 * driftMod, 15);
+        turnToHeading(TURN_SPEED, 0);
+        holdHeading(TURN_SPEED,  0, 0.5);    // Hold  0 Deg heading for a 1/2 second
+        driveStraight(DRIVE_SPEED, 4 * driftMod, 0);
         sleep(500);
+        colorCheck();
+        if (colorSensorRed > 150)
+        {
+            turnToHeading(TURN_SPEED, 30);
+            holdHeading(TURN_SPEED,  30.0, 0.5);    // Hold  30 Deg heading for a 1/2 second
+            driveStraight(DRIVE_SPEED, -10, 30);
+        }
+        else
+        {
+            turnToHeading(TURN_SPEED, -20);
+            holdHeading(TURN_SPEED,  -20.0, 0.5);    // Hold  -20 Deg heading for a 1/2 second
+            driveStraight(DRIVE_SPEED, 1 * driftMod, -20);
+            turnToHeading(TURN_SPEED, -40);
+            holdHeading(TURN_SPEED,  -40.0, 0.5);    // Hold  -40 Deg heading for a 1/2 second
+            driveStraight(DRIVE_SPEED, 12 * driftMod, -40);
+            sleep(500);
+            colorCheck();
+            if (colorSensorRed >150)
+            {
+                driveStraight(DRIVE_SPEED, -10, -40);
+            }
+            else
+            {
+                turnToHeading(TURN_SPEED, -90);
+                holdHeading(TURN_SPEED, -90, 0.5); // Hold -90 Deg heading for a 1/2 second
+                driveStraight(DRIVE_SPEED, 4, -90);
+                driveStraight(DRIVE_SPEED, -10, -90);
+            }
+        }
+
+
+
+        /*driveStraight(DRIVE_SPEED, 28.0, 0.0);    // Drive Forward 28"
+        turnToHeading(TURN_SPEED, -20);
+        colorCheck();
+        sleep(5000);
+        if (colorSensorRed > 250)
+        {
+            turnToHeading(TURN_SPEED, 20);
+            driveStraight(DRIVE_SPEED, 3, 0);
+        }
+        else
+        {
+            turnToHeading(TURN_SPEED, 0);
+            driveStraight(DRIVE_SPEED, -4, 0);
+            turnToHeading(TURN_SPEED, -45);
+            driveStraight(DRIVE_SPEED, 2,-45);
+            colorCheck();
+            if (colorSensorRed > 250)
+            {
+                driveStraight(DRIVE_SPEED, 4, -45);
+            }
+            else
+            {
+                driveStraight(DRIVE_SPEED, -2, -45);
+                turnToHeading(TURN_SPEED, 45);
+                driveStraight(DRIVE_SPEED, 6, 45);
+            }
+        }
         driveStraight(DRIVE_SPEED, -25.0, 0.0);    // Drive Backward 25"
         sleep(500);
         turnToHeading(TURN_SPEED, -90.0);               // Turn  CW to -90 Degrees
         sleep(500);
         holdHeading(TURN_SPEED,  -90.0, 0.5);    // Hold  -90 Deg heading for a 1/2 second
         sleep(500);
-        driveStraight(DRIVE_SPEED, 95.0, -90.0);    // Drive Forward 95"
+        driveStraight(DRIVE_SPEED, 94.0, -90.0);    // Drive Forward 95"
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // Pause to display last telemetry message.
+
+         */
     }
 
     /*

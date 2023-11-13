@@ -7,6 +7,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -33,6 +34,7 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor liftJoint = null;
         DcMotor leftActuator = null;
         DcMotor rightActuator = null;
+        ColorSensor colorSensor = null;
 
         CRServo droneLaunch = null;
         CRServo rightClaw = null;
@@ -48,6 +50,7 @@ public class RobotAlpha extends LinearOpMode {
         liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
         leftActuator = hardwareMap.get(DcMotor.class, "leftActuator");
         rightActuator = hardwareMap.get(DcMotor.class, "rightActuator");
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
 
         droneLaunch = hardwareMap.get(CRServo.class, "droneLaunch");
         rightClaw = hardwareMap.get(CRServo.class, "rightClaw");
@@ -58,7 +61,7 @@ public class RobotAlpha extends LinearOpMode {
         FRDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         liftDrive.setDirection(DcMotor.Direction.FORWARD);
-        liftJoint.setDirection(DcMotor.Direction.FORWARD);
+        liftJoint.setDirection(DcMotor.Direction.REVERSE);
         leftActuator.setDirection(DcMotor.Direction.FORWARD);
         rightActuator.setDirection(DcMotor.Direction.FORWARD);
 
@@ -97,7 +100,13 @@ public class RobotAlpha extends LinearOpMode {
 
         while (opModeIsActive()) {
             //TODO: Finish write tele-op
-
+            //telemetry.addData("LED", bLedOn ? "On" : "Off");
+            telemetry.addData("Clear", colorSensor.alpha());
+            telemetry.addData("Red  ", colorSensor.red());
+            telemetry.addData("Green", colorSensor.green());
+            telemetry.addData("Blue ", colorSensor.blue());
+            //telemetry.addData("Hue", hsvValues[0]);
+            telemetry.update();
             double speedMultiplier;
 
             double y = gamepad1.left_stick_y;
@@ -149,7 +158,7 @@ public class RobotAlpha extends LinearOpMode {
             if(liftJoystick>1){
                 liftJoystick = 1.0;
             }
-
+            telemetry.addData("Red  ", colorSensor.red());
             if(liftJoystick>0.05 || liftJoystick<-0.05){
                 liftDrive.setPower(liftJoystick);
             } else{
@@ -181,7 +190,7 @@ public class RobotAlpha extends LinearOpMode {
                 rightClaw.setPower(-0.7);
                 leftClaw.setPower(-0.7);
             }
-
+            telemetry.addData("Red  ", colorSensor.red());
 
 
             //digital
@@ -198,7 +207,7 @@ public class RobotAlpha extends LinearOpMode {
             if(jointMove>1.0){
                 jointMove = 1.0;
             }
-
+            telemetry.addData("Red  ", colorSensor.red());
             if(jointMove>0.05 || jointMove<-0.05){
                 liftJoint.setPower(jointMove);
             } else{
@@ -230,7 +239,7 @@ public class RobotAlpha extends LinearOpMode {
             BLDrive.setPower(backLeftPower * speedMultiplier);
             FRDrive.setPower(frontRightPower * speedMultiplier);
             BRDrive.setPower(backRightPower * speedMultiplier);
-
+            telemetry.addData("Red  ", colorSensor.red());
             if(((gamepad1.right_trigger)>.05) && ((gamepad1.left_trigger))>.05){
                 imu.resetYaw();
             }
