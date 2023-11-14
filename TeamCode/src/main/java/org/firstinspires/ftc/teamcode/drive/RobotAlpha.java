@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.teamcode.util.Encoder;
@@ -26,6 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class RobotAlpha extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        ElapsedTime runtime = new ElapsedTime();
         DcMotor FLDrive = null; // standard motor declarations
         DcMotor FRDrive = null;
         DcMotor BLDrive = null;
@@ -89,6 +90,7 @@ public class RobotAlpha extends LinearOpMode {
 
 
 
+
         waitForStart();
         double yHeading = 0;
         double xHeading = -90;
@@ -109,28 +111,75 @@ public class RobotAlpha extends LinearOpMode {
             telemetry.update();
             double speedMultiplier;
 
-            double y = gamepad1.left_stick_y;
-            double x = -gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            FLDrive.setDirection(DcMotor.Direction.FORWARD);
+            FRDrive.setDirection(DcMotor.Direction.REVERSE);
+            BLDrive.setDirection(DcMotor.Direction.FORWARD);
+            BRDrive.setDirection(DcMotor.Direction.REVERSE);
 
-            if (gamepad1.y) { // automatic turning commands
-                desiredHeading = yHeading;
-            }
-            if (gamepad1.x) {
-                desiredHeading = xHeading;
-            }
-            if (gamepad1.b) {
-                desiredHeading = bHeading;
-            }
-            if (gamepad1.a) {
-                desiredHeading = aHeading;
-            }
+            // Wait for the game to start (driver presses PLAY)
+            telemetry.addData("Status", "Initialized");
+            telemetry.update();
 
-            boolean slowMode = gamepad1.right_bumper;
-            if (slowMode) {
-                speedMultiplier = .5;
-            } else {
-                speedMultiplier = 1.0;
+            waitForStart();
+            runtime.reset();
+
+            // run until the end of the match (driver presses STOP)
+            while (opModeIsActive()) {
+                double max;
+
+                // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+                double straightMovement   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+                double strafeMovement =  gamepad1.left_stick_x;
+                double turnMovement     =  gamepad1.right_stick_x;
+
+                // Combine the joystick requests for each axis-motion to determine each wheel's power.
+                // Set up a variable for each drive wheel to save the power level for telemetry.
+                double FLPower  = straightMovement + strafeMovement + turnMovement;
+                double FRPower = straightMovement - strafeMovement - turnMovement;
+                double BLPower   = straightMovement - strafeMovement + turnMovement;
+                double BRPower  = straightMovement + strafeMovement - turnMovement;
+
+                // Normalize the values so no wheel power exceeds 100%
+                // This ensures that the robot maintains the desired motion.
+                max = Math.max(Math.abs(FLPower), Math.abs(FRPower));
+                max = Math.max(max, Math.abs(BLPower));
+                max = Math.max(max, Math.abs(BRPower));
+
+                if (max > 1.0) {
+                    FLPower  /= max;
+                    FRPower /= max;
+                    BLPower   /= max;
+                    BRPower  /= max;
+                }
+
+                // This is test code:
+                //
+                // Uncomment the following code to test your motor directions.
+                // Each button should make the corresponding motor run FORWARD.
+                //   1) First get all the motors to take to correct positions on the robot
+                //      by adjusting your Robot Configuration if necessary.
+                //   2) Then make sure they run in the correct direction by modifying the
+                //      the setDirection() calls above.
+                // Once the correct motors move in the correct direction re-comment this code.
+
+            /*
+            FLPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
+            BLPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
+            FRPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
+            BRPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
+            */
+
+                // Send calculated power to wheels
+                FLDrive.setPower(FLPower);
+                FRDrive.setPower(FRPower);
+                BLDrive.setPower(BLPower);
+                BRDrive.setPower(BRPower);
+
+                // Show the elapsed game time and wheel power.
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Front left/Right", "%4.2f, %4.2f", FLPower, FRPower);
+                telemetry.addData("Back  left/Right", "%4.2f, %4.2f", BLPower, BRPower);
+                telemetry.update();
             }
 
             //TODO: WRITE MORE CODE HERE TO MAKE MOTORS MOVE
@@ -179,6 +228,9 @@ public class RobotAlpha extends LinearOpMode {
                 leftActuator.setPower(0);
                 rightActuator.setPower(0);
             }
+
+            boolean clawOpen = gamepad2.a;
+            boolean clawClosed = gamepad2.b;
 
             if(gamepad2.a){
                 rightClaw.setPosition(0.5);
@@ -233,38 +285,6 @@ public class RobotAlpha extends LinearOpMode {
             } else{
                 liftJoint.setPower(0);
             }
-
-            double botHeadingDeg = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            double rotate = botHeadingDeg - desiredHeading; // algorithm for automatic turning
-            rotate += 540;
-            rotate = (rotate % 360) - 180;
-            rx += rotate/-70;
-
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS); // bot heading for field centric
-            // Rotate the movement direction counter to the bot's rotation
-            // Changes x and y from robot centric drive to field-centric
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-            // Denominator is the largest motor power (absolute value) or 1
-            // This ensures all the powers maintain the same ratio, but only when
-            // at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX - rx) / denominator; // standard mecanum wheel formulas
-            double backLeftPower = (rotY - rotX - rx) / denominator;
-            double frontRightPower = (rotY - rotX + rx) / denominator;
-            double backRightPower = (rotY + rotX + rx) / denominator;
-
-            FLDrive.setPower(frontLeftPower * speedMultiplier); // set power to wheels
-            BLDrive.setPower(backLeftPower * speedMultiplier);
-            FRDrive.setPower(frontRightPower * speedMultiplier);
-            BRDrive.setPower(backRightPower * speedMultiplier);
-            telemetry.addData("Red  ", colorSensor.red());
-            if(((gamepad1.right_trigger)>.05) && ((gamepad1.left_trigger))>.05){
-                imu.resetYaw();
-            }
-
         }
-
     }
 }
