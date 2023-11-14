@@ -37,12 +37,10 @@ public class RobotAlpha extends LinearOpMode {
         DcMotor rightActuator = null;
         ColorSensor colorSensor = null;
 
-        Servo droneLaunch = null;
-        Servo rightClaw = null;
-        Servo leftClaw = null;
+        CRServo droneLaunch = null;
+        CRServo claw = null;
 
         //Write numerical variables here
-        double desiredHeading = 0;
         FLDrive = hardwareMap.get(DcMotor.class, "FLDrive");
         FRDrive = hardwareMap.get(DcMotor.class, "FRDrive");
         BLDrive = hardwareMap.get(DcMotor.class, "BLDrive");
@@ -53,9 +51,8 @@ public class RobotAlpha extends LinearOpMode {
         rightActuator = hardwareMap.get(DcMotor.class, "rightActuator");
         colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
 
-        droneLaunch = hardwareMap.get(Servo.class, "droneLaunch");
-        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        droneLaunch = hardwareMap.get(CRServo.class, "droneLaunch");
+        claw = hardwareMap.get(CRServo.class, "claw");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -66,9 +63,8 @@ public class RobotAlpha extends LinearOpMode {
         leftActuator.setDirection(DcMotor.Direction.FORWARD);
         rightActuator.setDirection(DcMotor.Direction.FORWARD);
 
-        droneLaunch.setDirection(Servo.Direction.FORWARD);
-        rightClaw.setDirection(Servo.Direction.FORWARD);
-        leftClaw.setDirection(Servo.Direction.REVERSE);
+        droneLaunch.setDirection(CRServo.Direction.FORWARD);
+        claw.setDirection(CRServo.Direction.FORWARD);
 
         FLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BLDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -97,70 +93,43 @@ public class RobotAlpha extends LinearOpMode {
         double bHeading = 90;
         double aHeading = 180;
 
-
-        if (isStopRequested()) return;
-
         while (opModeIsActive()) {
-            //TODO: Finish write tele-op
-            //telemetry.addData("LED", bLedOn ? "On" : "Off");
-            telemetry.addData("Clear", colorSensor.alpha());
-            telemetry.addData("Red  ", colorSensor.red());
-            telemetry.addData("Green", colorSensor.green());
-            telemetry.addData("Blue ", colorSensor.blue());
-            //telemetry.addData("Hue", hsvValues[0]);
-            telemetry.update();
-            double speedMultiplier;
+            double maxWheelPower;
 
-            FLDrive.setDirection(DcMotor.Direction.FORWARD);
-            FRDrive.setDirection(DcMotor.Direction.REVERSE);
-            BLDrive.setDirection(DcMotor.Direction.FORWARD);
-            BRDrive.setDirection(DcMotor.Direction.REVERSE);
+            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+            double straightMovement = gamepad1.left_stick_y;
+            double strafeMovement = gamepad1.left_stick_x;
+            double turnMovement = gamepad1.right_stick_x;
 
-            // Wait for the game to start (driver presses PLAY)
-            telemetry.addData("Status", "Initialized");
-            telemetry.update();
+            // Combine the joystick requests for each axis-motion to determine each wheel's power.
+            // Set up a variable for each drive wheel to save the power level for telemetry.
+            double FLPower = straightMovement + strafeMovement + turnMovement;
+            double FRPower = straightMovement - strafeMovement - turnMovement;
+            double BLPower = straightMovement - strafeMovement + turnMovement;
+            double BRPower = straightMovement + strafeMovement - turnMovement;
 
-            waitForStart();
-            runtime.reset();
+            // Normalize the values so no wheel power exceeds 100%
+            // This ensures that the robot maintains the desired motion.
+            maxWheelPower = Math.max(Math.abs(FLPower), Math.abs(FRPower));
+            maxWheelPower = Math.max(maxWheelPower, Math.abs(BLPower));
+            maxWheelPower = Math.max(maxWheelPower, Math.abs(BRPower));
 
-            // run until the end of the match (driver presses STOP)
-            while (opModeIsActive()) {
-                double max;
+            if (maxWheelPower > 1.0) {
+                FLPower /= maxWheelPower;
+                FRPower /= maxWheelPower;
+                BLPower /= maxWheelPower;
+                BRPower /= maxWheelPower;
+            }
 
-                // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-                double straightMovement   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-                double strafeMovement =  gamepad1.left_stick_x;
-                double turnMovement     =  gamepad1.right_stick_x;
-
-                // Combine the joystick requests for each axis-motion to determine each wheel's power.
-                // Set up a variable for each drive wheel to save the power level for telemetry.
-                double FLPower  = straightMovement + strafeMovement + turnMovement;
-                double FRPower = straightMovement - strafeMovement - turnMovement;
-                double BLPower   = straightMovement - strafeMovement + turnMovement;
-                double BRPower  = straightMovement + strafeMovement - turnMovement;
-
-                // Normalize the values so no wheel power exceeds 100%
-                // This ensures that the robot maintains the desired motion.
-                max = Math.max(Math.abs(FLPower), Math.abs(FRPower));
-                max = Math.max(max, Math.abs(BLPower));
-                max = Math.max(max, Math.abs(BRPower));
-
-                if (max > 1.0) {
-                    FLPower  /= max;
-                    FRPower /= max;
-                    BLPower   /= max;
-                    BRPower  /= max;
-                }
-
-                // This is test code:
-                //
-                // Uncomment the following code to test your motor directions.
-                // Each button should make the corresponding motor run FORWARD.
-                //   1) First get all the motors to take to correct positions on the robot
-                //      by adjusting your Robot Configuration if necessary.
-                //   2) Then make sure they run in the correct direction by modifying the
-                //      the setDirection() calls above.
-                // Once the correct motors move in the correct direction re-comment this code.
+            // This is test code:
+            //
+            // Uncomment the following code to test your motor directions.
+            // Each button should make the corresponding motor run FORWARD.
+            //   1) First get all the motors to take to correct positions on the robot
+            //      by adjusting your Robot Configuration if necessary.
+            //   2) Then make sure they run in the correct direction by modifying the
+            //      the setDirection() calls above.
+            // Once the correct motors move in the correct direction re-comment this code.
 
             /*
             FLPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
@@ -169,18 +138,18 @@ public class RobotAlpha extends LinearOpMode {
             BRPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
             */
 
-                // Send calculated power to wheels
-                FLDrive.setPower(FLPower);
-                FRDrive.setPower(FRPower);
-                BLDrive.setPower(BLPower);
-                BRDrive.setPower(BRPower);
+            // Send calculated power to wheels
+            FLDrive.setPower(FLPower);
+            FRDrive.setPower(FRPower);
+            BLDrive.setPower(BLPower);
+            BRDrive.setPower(BRPower);
 
-                // Show the elapsed game time and wheel power.
-                telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("Front left/Right", "%4.2f, %4.2f", FLPower, FRPower);
-                telemetry.addData("Back  left/Right", "%4.2f, %4.2f", BLPower, BRPower);
-                telemetry.update();
-            }
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Front left/Right", "%4.2f, %4.2f", FLPower, FRPower);
+            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", BLPower, BRPower);
+            telemetry.update();
+
 
             //TODO: WRITE MORE CODE HERE TO MAKE MOTORS MOVE
 /* THIS CODE IS FOR USING THE LIFT WITH BUTTONS. TESTING PURPOSES ONLY!
@@ -204,41 +173,41 @@ public class RobotAlpha extends LinearOpMode {
 
             // For analog
             double liftJoystick = gamepad2.left_stick_y;
-            if(liftJoystick>1){
+            if (liftJoystick > 1) {
                 liftJoystick = 1.0;
             }
             telemetry.addData("Red  ", colorSensor.red());
-            if(liftJoystick>0.05 || liftJoystick<-0.05){
+            if (liftJoystick > 0.05 || liftJoystick < -0.05) {
                 liftDrive.setPower(liftJoystick);
-            } else{
+            } else {
                 liftDrive.setPower(0);
             }
 
             boolean actuatorMoveUp = gamepad2.dpad_up;
             boolean actuatorMoveDown = gamepad2.dpad_down;
 
-            if(actuatorMoveUp && !actuatorMoveDown){
+            if (actuatorMoveUp && !actuatorMoveDown) {
                 leftActuator.setPower(0.7);
                 rightActuator.setPower(0.7);
-            } else if(actuatorMoveDown && !actuatorMoveUp){
+            } else if (actuatorMoveDown && !actuatorMoveUp) {
                 leftActuator.setPower(-0.7);
                 rightActuator.setPower(-0.7);
-            }
-            else {
+            } else {
                 leftActuator.setPower(0);
                 rightActuator.setPower(0);
             }
 
             boolean clawOpen = gamepad2.a;
             boolean clawClosed = gamepad2.b;
-
-            if(gamepad2.a){
-                rightClaw.setPosition(0.5);
-                leftClaw.setPosition(0.5);
-            } else if (gamepad2.b) {
-                rightClaw.setPosition(0);
-                leftClaw.setPosition(0);
+            //While holding A, hold the pixel
+            if (gamepad2.a) {
+                claw.setPower(0.9);
             }
+            //When let go of A, let go of pixel
+            else {
+                claw.setPower(1);
+            }
+
 
             telemetry.addData("Red  ", colorSensor.red());
 
@@ -253,12 +222,10 @@ public class RobotAlpha extends LinearOpMode {
                 droneLaunch.setPower(0);
             }
              */
-            if (gamepad2.right_bumper){
-                droneLaunch.setPosition(0.5);
-            }
-            else if (gamepad2.left_bumper)
-            {
-                droneLaunch.setPosition(0);
+            if (gamepad2.right_bumper) {
+                droneLaunch.setPower(0.5);
+            } else if (gamepad2.left_bumper) {
+                droneLaunch.setPower(0);
             }
 
 
@@ -276,13 +243,13 @@ public class RobotAlpha extends LinearOpMode {
 
             //analog
             double jointMove = gamepad2.right_stick_y;
-            if(jointMove>1.0){
+            if (jointMove > 1.0) {
                 jointMove = 1.0;
             }
             telemetry.addData("Red  ", colorSensor.red());
-            if(jointMove>0.05 || jointMove<-0.05){
+            if (jointMove > 0.05 || jointMove < -0.05) {
                 liftJoint.setPower(jointMove);
-            } else{
+            } else {
                 liftJoint.setPower(0);
             }
         }
