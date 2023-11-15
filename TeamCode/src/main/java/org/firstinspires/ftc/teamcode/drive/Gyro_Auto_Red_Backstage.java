@@ -95,7 +95,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Autonomous(name="Robot: Auto Drive By Gyro", group="Robot")
 //@Disabled
-public class Gyro_Auto_Otherside extends LinearOpMode {
+public class Gyro_Auto_Red_Backstage extends LinearOpMode {
 
     /*telemetry.addData("LED", bLedOn ? "On" : "Off");
             telemetry.addData("Clear", colorSensor.alpha());
