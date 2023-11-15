@@ -178,7 +178,7 @@ public class RobotAlpha extends LinearOpMode {
             }
             telemetry.addData("Red  ", colorSensor.red());
             if (liftJoystick > 0.05 || liftJoystick < -0.05) {
-                liftDrive.setPower(liftJoystick);
+                liftDrive.setPower(liftJoystick * 0.4);
             } else {
                 liftDrive.setPower(0);
             }
@@ -204,7 +204,7 @@ public class RobotAlpha extends LinearOpMode {
                 claw.setPower(0.9);
             }
             //When let go of A, let go of pixel
-            else {
+            else if (gamepad2.b){
                 claw.setPower(1);
             }
 
@@ -248,7 +248,7 @@ public class RobotAlpha extends LinearOpMode {
             }
             telemetry.addData("Red  ", colorSensor.red());
             if (jointMove > 0.05 || jointMove < -0.05) {
-                liftJoint.setPower(jointMove);
+                liftJoint.setPower(jointMove * 0.4);
             } else {
                 liftJoint.setPower(0);
             }
