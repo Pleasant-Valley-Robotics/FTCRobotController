@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@TeleOp(name = "V1.1", group = "Iterative Opmode")
+@TeleOp(name = "V1.1.2", group = "Iterative Opmode")
 public class RobotAlpha extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -176,7 +176,6 @@ public class RobotAlpha extends LinearOpMode {
             if (liftJoystick > 1) {
                 liftJoystick = 1.0;
             }
-            telemetry.addData("Red  ", colorSensor.red());
             if (liftJoystick > 0.05 || liftJoystick < -0.05) {
                 liftDrive.setPower(liftJoystick * 0.4);
             } else {
@@ -208,9 +207,6 @@ public class RobotAlpha extends LinearOpMode {
                 claw.setPower(1);
             }
 
-
-            telemetry.addData("Red  ", colorSensor.red());
-
             /*
             double launchDroneServo = gamepad2.right_trigger;
             boolean stopLaunchDroneServo = gamepad2.left_bumper;
@@ -222,10 +218,12 @@ public class RobotAlpha extends LinearOpMode {
                 droneLaunch.setPower(0);
             }
              */
-            if (gamepad2.right_bumper) {
-                droneLaunch.setPower(0.5);
-            } else if (gamepad2.left_bumper) {
+            if (gamepad2.right_trigger > 0.1) {
                 droneLaunch.setPower(0);
+            }
+            else
+            {
+                droneLaunch.setPower(-1.3);
             }
 
 
@@ -246,12 +244,12 @@ public class RobotAlpha extends LinearOpMode {
             if (jointMove > 1.0) {
                 jointMove = 1.0;
             }
-            telemetry.addData("Red  ", colorSensor.red());
             if (jointMove > 0.05 || jointMove < -0.05) {
                 liftJoint.setPower(jointMove * 0.4);
             } else {
                 liftJoint.setPower(0);
             }
+            telemetry.addData("Red  ", colorSensor.red());
         }
     }
 }
