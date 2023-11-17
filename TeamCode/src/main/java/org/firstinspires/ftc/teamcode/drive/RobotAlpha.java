@@ -249,9 +249,11 @@ public class RobotAlpha extends LinearOpMode {
             } else {
                 liftJoint.setPower(0);
             }
-            telemetry.addData("Red  ", colorSensor.red());
+//            telemetry.addData("Red  ", colorSensor.red());
 //            telemetry.addData("Lift joint encoder value  ", liftJoint.getCurrentPosition());
 //            telemetry.addData("Lift drive encoder value  ", liftDrive.getCurrentPosition());
+//            telemetry.addData("LiftPosition: ", liftJoint.getCurrentPosition());
+//            telemetry.update();
         }
     }
 }

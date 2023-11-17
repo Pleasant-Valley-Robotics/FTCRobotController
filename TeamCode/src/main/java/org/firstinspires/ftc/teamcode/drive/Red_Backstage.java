@@ -98,20 +98,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class Red_Backstage extends LinearOpMode {
 
     /*telemetry.addData("LED", bLedOn ? "On" : "Off");
-            telemetry.addData("Clear", colorSensor.alpha());
-            telemetry.addData("Red  ", colorSensor.red());
-            telemetry.addData("Green", colorSensor.green());
-            telemetry.addData("Blue ", colorSensor.blue());
+            telemetry.addData("Clear", colorSensor1.alpha());
+            telemetry.addData("Red  ", colorSensor1.red());
+            telemetry.addData("Green", colorSensor1.green());
+            telemetry.addData("Blue ", colorSensor1.blue());
             telemetry.addData("Hue", hsvValues[0]);
 
      */
-    int colorSensorRed = 0;
-    int colorSensorGreen = 0;
-    int colorSensorBlue = 0;
-    float colorSensorHue = 0;
-    int colorSensorClear = 0;
+    int colorSensor1Red = 0;
+    int colorSensor1Green = 0;
+    int colorSensor1Blue = 0;
+    float colorSensor1Hue = 0;
+    int colorSensor1Clear = 0;
     /* Declare OpMode members. */
-    ColorSensor colorSensor = null;    // Hardware Device Object
+    ColorSensor colorSensor1 = null;    // Hardware Device Object
+    ColorSensor colorSensor2 = null;
 
     DcMotor FLDrive = null; // Front Left Drive Motor
     DcMotor FRDrive = null; // Front Right Drive Motor
@@ -153,7 +154,7 @@ public class Red_Backstage extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.4;     // Max driving speed for better distance accuracy.
+    static final double     DRIVE_SPEED             = 0.2;     // Max driving speed for better distance accuracy.
     static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
@@ -174,7 +175,8 @@ public class Red_Backstage extends LinearOpMode {
         BLDrive = hardwareMap.get(DcMotor.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
         // get a reference to our ColorSensor object.
-        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color2");
+        colorSensor1 = hardwareMap.get(ColorSensor.class, "sensor_color2");
+        colorSensor2 = hardwareMap.get(ColorSensor.class, "sensor_color1");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -244,16 +246,17 @@ public class Red_Backstage extends LinearOpMode {
         */
 
         double driftMod = 0.88;
-        driveStraight(DRIVE_SPEED, 15 * driftMod, 0);
+        driveStraight(DRIVE_SPEED, 3 * driftMod, 0);
         turnToHeading(TURN_SPEED, -15);
         holdHeading(TURN_SPEED,  -15.0, 0.5);    // Hold  15 Deg heading for a 1/2 second
-        driveStraight(DRIVE_SPEED, 10 * driftMod, -15);
+        driveStraight(DRIVE_SPEED, 21 * driftMod, -15);
         turnToHeading(TURN_SPEED, 0);
         holdHeading(TURN_SPEED,  0, 0.5);    // Hold  0 Deg heading for a 1/2 second
         driveStraight(DRIVE_SPEED, 4 * driftMod, 0);
         sleep(500);
         colorCheck();
-        if (colorSensorRed > 150)
+
+        if (colorSensor1Red > 150)
         {
             turnToHeading(TURN_SPEED, -30);
             holdHeading(TURN_SPEED,  -30.0, 0.5);    // Hold  30 Deg heading for a 1/2 second
@@ -261,26 +264,38 @@ public class Red_Backstage extends LinearOpMode {
         }
         else
         {
-            turnToHeading(TURN_SPEED, 20);
-            holdHeading(TURN_SPEED,  20.0, 0.5);    // Hold  -20 Deg heading for a 1/2 second
-            driveStraight(DRIVE_SPEED, 1 * driftMod, 20);
-            turnToHeading(TURN_SPEED, 40);
-            holdHeading(TURN_SPEED,  40.0, 0.5);    // Hold  -40 Deg heading for a 1/2 second
-            driveStraight(DRIVE_SPEED, 12 * driftMod, 40);
+            turnToHeading(TURN_SPEED, 32);
+            holdHeading(TURN_SPEED, 32, 0.5);
+            driveStraight(DRIVE_SPEED, 8, 32);
+            turnToHeading(TURN_SPEED, 0);
+            holdHeading(TURN_SPEED, 0, 0.5);
+            //driveStraight(DRIVE_SPEED, 5 * driftMod, 0);
+            //turnToHeading(TURN_SPEED, 90);
+            //holdHeading(TURN_SPEED,  90.0, 0.5);    // Hold  90 Deg heading for a 1/2 second
+            //driveStraight(DRIVE_SPEED, 5 * driftMod, 90);
             sleep(500);
-            colorCheck();
-            if (colorSensorRed >150)
+            if (colorSensor2.red() > 300)
             {
-                driveStraight(DRIVE_SPEED, -10, 40);
+                driveStraight(DRIVE_SPEED, 2, 0);
+                driveStraight(DRIVE_SPEED, -10, 0);
             }
             else
             {
-                turnToHeading(TURN_SPEED, 90);
-                holdHeading(TURN_SPEED, 90, 0.5); // Hold -90 Deg heading for a 1/2 second
-                driveStraight(DRIVE_SPEED, 4, 90);
-                driveStraight(DRIVE_SPEED, -10, 90);
+                driveStraight(DRIVE_SPEED, 4, 0);
+                while( getHeading() < 70 || getHeading() > 80)
+                {
+                    BLDrive.setPower(DRIVE_SPEED);
+                    FLDrive.setPower(DRIVE_SPEED);
+                }
+                driveStraight(DRIVE_SPEED, 20, 70);
             }
+
+
+
+
         }
+
+
 
 
 
@@ -288,7 +303,7 @@ public class Red_Backstage extends LinearOpMode {
         turnToHeading(TURN_SPEED, -20);
         colorCheck();
         sleep(5000);
-        if (colorSensorRed > 250)
+        if (colorSensor1Red > 250)
         {
             turnToHeading(TURN_SPEED, 20);
             driveStraight(DRIVE_SPEED, 3, 0);
@@ -300,7 +315,7 @@ public class Red_Backstage extends LinearOpMode {
             turnToHeading(TURN_SPEED, -45);
             driveStraight(DRIVE_SPEED, 2,-45);
             colorCheck();
-            if (colorSensorRed > 250)
+            if (colorSensor1Red > 250)
             {
                 driveStraight(DRIVE_SPEED, 4, -45);
             }
@@ -310,6 +325,8 @@ public class Red_Backstage extends LinearOpMode {
                 turnToHeading(TURN_SPEED, 45);
                 driveStraight(DRIVE_SPEED, 6, 45);
             }
+
+
         }
         driveStraight(DRIVE_SPEED, -25.0, 0.0);    // Drive Backward 25"
         sleep(500);
@@ -356,7 +373,7 @@ public class Red_Backstage extends LinearOpMode {
 
 
         // Set the LED in the beginning
-        colorSensor.enableLed(bLedOn);
+        colorSensor1.enableLed(bLedOn);
         // check the status of the x button on either gamepad.
         bCurrState = true;
 
@@ -365,28 +382,28 @@ public class Red_Backstage extends LinearOpMode {
 
             // button is transitioning to a pressed state. So Toggle LED
             bLedOn = !bLedOn;
-            colorSensor.enableLed(bLedOn);
+            colorSensor1.enableLed(bLedOn);
         }
 
         // update previous state variable.
         bPrevState = bCurrState;
 
         // convert the RGB values to HSV values.
-        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+        Color.RGBToHSV(colorSensor1.red() * 8, colorSensor1.green() * 8, colorSensor1.blue() * 8, hsvValues);
 
         // send the info back to driver station using telemetry function.
         telemetry.addData("LED", bLedOn ? "On" : "Off");
-        telemetry.addData("Clear", colorSensor.alpha());
-        telemetry.addData("Red  ", colorSensor.red());
-        telemetry.addData("Green", colorSensor.green());
-        telemetry.addData("Blue ", colorSensor.blue());
+        telemetry.addData("Clear", colorSensor1.alpha());
+        telemetry.addData("Red  ", colorSensor1.red());
+        telemetry.addData("Green", colorSensor1.green());
+        telemetry.addData("Blue ", colorSensor1.blue());
         telemetry.addData("Hue", hsvValues[0]);
 
-        colorSensorClear = colorSensor.alpha();
-        colorSensorRed = colorSensor.red();
-        colorSensorGreen = colorSensor.green();
-        colorSensorBlue = colorSensor.blue();
-        colorSensorHue = hsvValues[0];
+        colorSensor1Clear = colorSensor1.alpha();
+        colorSensor1Red = colorSensor1.red();
+        colorSensor1Green = colorSensor1.green();
+        colorSensor1Blue = colorSensor1.blue();
+        colorSensor1Hue = hsvValues[0];
 
         // change the background color to match the color detected by the RGB sensor.
         // pass a reference to the hue, saturation, and value array as an argument
