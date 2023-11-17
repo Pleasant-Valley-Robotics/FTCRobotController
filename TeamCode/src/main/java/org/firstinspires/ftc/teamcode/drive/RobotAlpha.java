@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@TeleOp(name = "V1.1.2", group = "Iterative Opmode")
+@TeleOp(name = "V1.1.5", group = "Iterative Opmode")
 public class RobotAlpha extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -49,7 +49,7 @@ public class RobotAlpha extends LinearOpMode {
         liftJoint = hardwareMap.get(DcMotor.class, "liftJoint");
         leftActuator = hardwareMap.get(DcMotor.class, "leftActuator");
         rightActuator = hardwareMap.get(DcMotor.class, "rightActuator");
-        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color1");
 
         droneLaunch = hardwareMap.get(CRServo.class, "droneLaunch");
         claw = hardwareMap.get(CRServo.class, "claw");
@@ -187,10 +187,10 @@ public class RobotAlpha extends LinearOpMode {
 
             if (actuatorMoveUp && !actuatorMoveDown) {
                 leftActuator.setPower(0.7);
-                rightActuator.setPower(0.7);
+                rightActuator.setPower(0.69);
             } else if (actuatorMoveDown && !actuatorMoveUp) {
                 leftActuator.setPower(-0.7);
-                rightActuator.setPower(-0.7);
+                rightActuator.setPower(-0.69);
             } else {
                 leftActuator.setPower(0);
                 rightActuator.setPower(0);
